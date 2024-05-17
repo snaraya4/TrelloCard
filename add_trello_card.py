@@ -1,10 +1,9 @@
-import argparse
 import requests
+import argparse
 
-#Constants for the API key and token
-API_KEY = 'api_key'
-TOKEN = 'token'
-
+# Constants for the API key and token
+API_KEY = 'API_KEY'
+TOKEN = 'TOKEN'
 
 def get_lists_from_board(board_id):
     url = f"https://api.trello.com/1/boards/{board_id}/lists"
@@ -12,39 +11,36 @@ def get_lists_from_board(board_id):
         'key': API_KEY,
         'token': TOKEN
     }
-
     response = requests.get(url, params=query)
     if response.status_code == 200:
         return response.json()
     else:
         print("Error fetching lists:", response.text)
         return None
-    
+
 def create_card(list_id, card_name, card_desc):
     url = "https://api.trello.com/1/cards"
     query = {
         'key': API_KEY,
-        'token': TOKEN, 
+        'token': TOKEN,
         'idList': list_id,
         'name': card_name,
         'desc': card_desc
     }
-
     response = requests.post(url, data=query)
     if response.status_code == 200:
         return response.json()
     else:
         print("Error creating card:", response.text)
         return None
-    
+
 def add_comment_to_card(card_id, comment_text):
-    url = f"https://api,trello.com/1/cards/{card_id}/actions/comments"
+    url = f"https://api.trello.com/1/cards/{card_id}/actions/comments"
     query = {
         'key': API_KEY,
         'token': TOKEN,
-        'text':comment_text
+        'text': comment_text
     }
-
     response = requests.post(url, data=query)
     if response.status_code == 200:
         print("Comment added successfully.")
@@ -59,7 +55,6 @@ def create_label(board_id, label_name, label_color):
         'name': label_name,
         'color': label_color
     }
-
     response = requests.post(url, data=query)
     if response.status_code == 200:
         return response.json()
@@ -70,11 +65,10 @@ def create_label(board_id, label_name, label_color):
 def add_label_to_card(card_id, label_id):
     url = f"https://api.trello.com/1/cards/{card_id}/idLabels"
     query = {
-        'key':API_KEY,
-        'token':TOKEN,
-        'value':label_id
+        'key': API_KEY,
+        'token': TOKEN,
+        'value': label_id
     }
-
     response = requests.post(url, data=query)
     if response.status_code == 200:
         print("Label added successfully to the card.")
@@ -83,7 +77,7 @@ def add_label_to_card(card_id, label_id):
 
 def main():
     parser = argparse.ArgumentParser(description='Create a Trello card with labels and a comment.')
-    parser.add_argument('board_id', type=str, help='The ID of the Trello Board.')
+    parser.add_argument('board_id', type=str, help='The ID of the Trello board.')
     parser.add_argument('list_name', type=str, help='The name of the list to add the card to.')
     parser.add_argument('card_name', type=str, help='The name of the new card.')
     parser.add_argument('card_desc', type=str, help='The description of the new card.')
@@ -94,12 +88,12 @@ def main():
     lists = get_lists_from_board(args.board_id)
     if not lists:
         return
-    
+
     list_id = next((lst['id'] for lst in lists if lst['name'].lower() == args.list_name.lower()), None)
     if not list_id:
         print(f"List named '{args.list_name}' not found.")
         return
-    
+
     card = create_card(list_id, args.card_name, args.card_desc)
     if card:
         print(f"Card created successfully: {card['id']}")
@@ -108,17 +102,17 @@ def main():
         while True:
             label_name = input("Enter label name (or press q to stop): ")
             if label_name == 'q':
-                print("User selected q, operation ended")
+                print("user selected q")
                 break
             label_color = input("Enter label color: ")
             label = create_label(args.board_id, label_name, label_color)
             if label:
                 add_label_to_card(card['id'], label['id'])
             else:
-                print(f"Failed tocreate label '{label_name}' with color '{label_color}'.")
+                print(f"Failed to create label '{label_name}' with color '{label_color}'.")
+
     else:
         print("Failed to create card.")
-
 
 if __name__ == "__main__":
     main()
