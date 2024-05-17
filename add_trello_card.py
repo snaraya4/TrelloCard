@@ -67,6 +67,19 @@ def create_label(board_id, label_name, label_color):
         print("Error creating label:", response.text)
         return None
 
+def add_label_to_card(card_id, label_id):
+    url = f"https://api.trello.com/1/cards/{card_id}/idLabels"
+    query = {
+        'key':API_KEY,
+        'token':TOKEN,
+        'value':label_id
+    }
+
+    response = requests.post(url, data=query)
+    if response.status_code == 200:
+        print("Label added successfully to the card.")
+    else:
+        print("Error adding label to the card:", response.text)
 
 def main():
     parser = argparse.ArgumentParser(description='Create a Trello card with labels and a comment.')
