@@ -1,9 +1,15 @@
 import requests
 import argparse
+from dotenv import load_dotenv
+import os
 
-# Constants for the API key and token
-API_KEY = 'API_KEY'
-TOKEN = 'TOKEN'
+# Load variables from the .env file
+load_dotenv()
+
+
+API_KEY = os.environ.get("API_KEY")
+TOKEN = os.environ.get("TOKEN")
+
 
 def get_lists_from_board(board_id):
     url = f"https://api.trello.com/1/boards/{board_id}/lists"
