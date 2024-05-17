@@ -88,7 +88,37 @@ def main():
     parser.add_argument('card_name', type=str, help='The name of the new card.')
     parser.add_argument('card_desc', type=str, help='The description of the new card.')
     parser.add_argument('comment_text', type=str, help='The comment to add to the new card.')
+
+    args = parser.parse_args()
+
+    lists = get_lists_from_board(args.board_id)
+    if not lists:
+        return
     
+    list_id = next((lst['id'] for lst in lists if lst['name'].lower() == args.list_name.lower()), None)
+    if not list_id:
+        print(f"List named '{args.list_name}' not found.")
+        return
+    
+    card = create_card(list_id, args.card_name, args.card_desc)
+    if card:
+        print(f"Card created successfully: {card['id']}")
+        add_comment_to_card(card['id'], args.comment_text)
+
+        while True:
+            label_name = input("Enter label name (or press q to stop): ")
+            if label_name == 'q':
+                print("User selected q, operation ended")
+                break
+            label_color = input("Enter label color: ")
+            label = create_label(args.board_id, label_name, label_color)
+            if label:
+                add_label_to_card(card['id'], label['id'])
+            else:
+                print(f"Failed tocreate label '{label_name}' with color '{label_color}'.")
+    else:
+        print("Failed to create card.")
+
 
 if __name__ == "__main__":
     main()
