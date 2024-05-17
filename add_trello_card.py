@@ -37,11 +37,26 @@ def create_card(list_id, card_name, card_desc):
         print("Error creating card:", response.text)
         return None
     
+def add_comment_to_card(card_id, comment_text):
+    url = f"https://api,trello.com/1/cards/{card_id}/actions/comments"
+    query = {
+        'key': API_KEY,
+        'token': TOKEN,
+        'text':comment_text
+    }
+
+    response = requests.post(url, data=query)
+    if response.status_code == 200:
+        print("Comment added successfully.")
+    else:
+        print("Error adding comment:", response.text)
+
 def main():
     parser = argparse.ArgumentParser(description='Create a Trello card with labels and a comment.')
     parser.add_argument('board_id', type=str, help='The ID of the Trello Board.')
     parser.add_argument('list_name', type=str, help='The name of the list to add the card to.')
     parser.add_argument('card_name', type=str, help='The name of the new card.')
+    parser.add_argument('comment_text', type=str, help='The comment to add to the new card.')
     
 
 if __name__ == "__main__":
