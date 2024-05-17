@@ -102,9 +102,9 @@ def main():
         while True:
             label_name = input("Enter label name (or press q to stop): ")
             if label_name == 'q':
-                print("user selected q")
+                print("User selected q, operation ended.")
                 break
-            label_color = input("Enter label color: ")
+            label_color = input("Enter label color:(all small letters) ")
             label = create_label(args.board_id, label_name, label_color)
             if label:
                 add_label_to_card(card['id'], label['id'])
